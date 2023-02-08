@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "appTeste",
-    "slug": "appTeste",
+    "name": "Gerador de Senhas",
+    "slug": "geradordesenhas",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
