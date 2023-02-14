@@ -5,7 +5,7 @@ TODO: Refatorar o codigo (Componetizar, separar styles, mudar icons)
 import Slider from '@react-native-community/slider';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Switch, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard';
 
@@ -122,7 +122,7 @@ export default function App() {
               <Feather name='refresh-ccw' size={25} style={{ marginHorizontal: 8 }}></Feather>
 
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { Clipboard.setStringAsync(password) }}>
+            <TouchableOpacity onPress={() => { Clipboard.setStringAsync(password); ToastAndroid.show('Senha copiada!!', ToastAndroid.SHORT) }}>
               <Feather name='copy' size={25} style={{ marginHorizontal: 8 }}></Feather>
 
             </TouchableOpacity>
