@@ -8,13 +8,14 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Switch, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard';
+import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 
+import styles from './styles';
 
 export default function App() {
   const [password, setPassword] = useState('');
   const [strongOfPassword, setStrongOfPassword] = useState(0);
   const [numbersOfChars, setNumbersOfChars] = useState(6);
-  const [fontSizePassword, setFontSizePassword] = useState(25);
   const [charsPasswordCheckboxes, setCharsPasswordCheckboxes] = useState([
     { id: 'upperCaseChars', value: false, label: 'Letras Maiusculas (ABC)', chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
     { id: 'lowerCaseChars', value: false, label: 'Letras Minusculas (abc)', chars: 'abcdefghijklmnopqrstuvwxyz' },
@@ -33,13 +34,16 @@ export default function App() {
   useEffect(() => {
     onChangeBackgroundColor()
   }, [strongOfPassword])
+
+
   const generatePassword = () => {
+
     var finalPassword = ''
 
     const isEveryCheckboxFalseOrTrue = charsPasswordCheckboxes.filter(item => item.value == true);
-    //console.log(isEveryCheckboxFalseOrTrue.length);
-    // console.log(selectedsCheckboxes);
+
     var charstoGeneratePassword = "";
+
     if (isEveryCheckboxFalseOrTrue.length > 0 && isEveryCheckboxFalseOrTrue.length < charsPasswordCheckboxes.length) {
       for (var charsCheckboxItems of isEveryCheckboxFalseOrTrue) {
         charstoGeneratePassword += charsCheckboxItems.chars;
@@ -58,6 +62,7 @@ export default function App() {
     }
     setPassword(finalPassword)
   };
+
   const checkStrongOfPassword = () => {
     let score = 0;
 
@@ -86,6 +91,7 @@ export default function App() {
     if (score > 100) score = 100
     setStrongOfPassword(parseInt(score))
   }
+
   const onChangeBackgroundColor = () => {
     if (strongOfPassword > 80) {
       setBackgroundColorStrongBar('green')
@@ -96,6 +102,7 @@ export default function App() {
     }
 
   }
+
   const toggleItem = id => {
     setCharsPasswordCheckboxes(previousItems =>
       previousItems.map(item => {
@@ -105,9 +112,18 @@ export default function App() {
         return item
       }))
   };
+
   const onChangeCharsNumbers = value => {
     setNumbersOfChars(value)
   }
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      width: withSpring(`${strongOfPassword}%`, { mass: 0.2 }),
+    };
+  });
+
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -122,15 +138,15 @@ export default function App() {
               <Feather name='refresh-ccw' size={25} style={{ marginHorizontal: 8 }}></Feather>
 
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { Clipboard.setStringAsync(password); ToastAndroid.show('Senha copiada!!', ToastAndroid.SHORT) }}>
+            <TouchableOpacity onPress={() => { Clipboard.setStringAsync(password); ToastAndroid.show('Senha copiada pra are!!', ToastAndroid.SHORT) }}>
               <Feather name='copy' size={25} style={{ marginHorizontal: 8 }}></Feather>
 
             </TouchableOpacity>
           </View>
         </View>
-        <View style={[styles.strongPasswordBar, { width: `${strongOfPassword}%` }, { backgroundColor: `${backgroundColorStrongBar}` }]}>
+        <Animated.View style={[styles.strongPasswordBar, animatedStyles, { backgroundColor: `${backgroundColorStrongBar}` }]} />
 
-        </View>
+
 
       </View>
 
@@ -159,80 +175,7 @@ export default function App() {
 
 
       <StatusBar style="auto" />
-      {/* <TouchableOpacity style={styles.buttonContainer} onPress={() => {generatePassword()}} >
-        <Text style={styles.textButton}>
-          Gerar senha
-        </Text>
-      </TouchableOpacity> */}
+
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  titleContainer: {
-    alignItems: 'center'
-
-  },
-  title: {
-    fontSize: 30,
-    marginHorizontal: 50,
-    marginVertical: 30,
-
-    fontWeight: 'bold',
-
-  },
-
-  textContainer: {
-
-    color: "#000",
-    fontSize: 25
-
-  },
-  passwordContainer: {
-    flexDirection: 'column',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginHorizontal: 20,
-    marginBottom: 10,
-  },
-  textPasswordContainer: {
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    padding: 20,
-
-  },
-  strongPasswordBar: {
-    marginBottom: 0,
-    height: 5,
-    backgroundColor: 'green'
-  },
-  buttonContainer: {
-    padding: 15,
-    backgroundColor: "#7402de",
-    marginHorizontal: 130,
-    marginVertical: 20,
-    alignItems: 'center',
-    borderRadius: 25
-  },
-  textButton: {
-    color: 'white'
-  },
-  checkboxesContainer: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  checkboxesItemContainer: {
-    flexDirection: "row"
-  },
-  checkboxLabel: {
-    margin: 10,
-    fontSize: 16,
-    fontWeight: 'bold'
-  }
-});
